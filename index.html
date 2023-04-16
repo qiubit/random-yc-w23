@@ -16,6 +16,60 @@
       height: 100%;
       width: 100%;
     }
+
+    .header { 
+      background-color: #fafafa;
+      color: #333333;
+      font-family: sans-serif;
+      padding: 20px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+      z-index: 100;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    #companyDescription {
+      padding-left: 8px;
+    }
+
+
+    .logo {
+      font-weight: bold;
+      font-size: 24px;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+
+    nav ul li {
+      margin: 0 10px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: rgb(38 139 210);
+      display: flex;
+    }
+
+    nav ul li div{
+      padding-left: 4px;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
   </style>
   <script>
     // Load /yc-w23-clear.json
@@ -26,8 +80,17 @@
         // Pick random element of keys
         const randomKey = keys[Math.floor(Math.random() * keys.length)];
         const randomURL = data.companyURL[randomKey];
+        const randomLogo = data.logoURL[randomKey];
         const iframe = document.querySelector('iframe');
         iframe.src = randomURL;
+        const logoURL = document.getElementById("logoURL");
+        logoURL.src = randomLogo;
+        const companyDescription = document.getElementById("companyDescription");
+        companyDescription.innerText = data.title[randomKey] + " - " + data.description[randomKey];
+        const companyURL = document.getElementById("companyURL");
+        companyURL.href = randomURL;
+        const companyURLText = document.getElementById("companyURLText");
+        companyURLText.innerText = "Go to " + data.title[randomKey];
       })
       .catch(error => {
         console.error(error);
@@ -35,6 +98,22 @@
   </script>
 </head>
 <body style="margin:0px;padding:0px;overflow:hidden">
+  <header class="header">
+    <div class="container">
+      <img id="logoURL" src="#" alt="Company Logo" width="48" height="48">
+      <div id="companyDescription">My Website</div>
+      <nav>
+        <ul>
+          <li>
+            <a id="companyURL" href="#">
+              <svg id="companyURLIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" width="1.25em" height="1.25em" class="-mt-px inline-block h-4 w-4 group-hover:underline"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              <div id="companyURLText">Home</div>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
   <iframe
     sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
     frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%">
