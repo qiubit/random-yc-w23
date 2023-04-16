@@ -73,7 +73,7 @@
   </style>
   <script>
     // Load /yc-w23-clear.json
-    fetch('./yc-w23-clear.json')
+    fetch('./yc-w23-clear.json', { cache: "force-cache" })
       .then(response => response.json())
       .then(data => {
         const keys = Object.keys(data.companyURL);
