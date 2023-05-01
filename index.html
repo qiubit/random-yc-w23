@@ -72,14 +72,44 @@
     }
   </style>
   <script>
+    function getChosenCompany() {
+      const queryString = window.location.search;
+      const params = new URLSearchParams(queryString);
+      const companyId = params.get("cid");
+      console.log(companyId);
+      return companyId;
+    }
+
+    function resizeIframe() {
+      const iframe = document.getElementById('myIframe');
+      iframe.style.height = iframe.contentWindow.document.body.scrollHeight -40+ 'px';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const iframe = document.getElementById('myIframe');
+      iframe.onload = resizeIframe;
+    });
+
+    document.addEventListener('keypress', function(e) {
+      if (e.code === 'Space') {
+        const url = new URL(window.location.href);
+        const searchParams = new URLSearchParams(url.search);
+        const cid = parseInt(searchParams.get('cid')) || 0;
+        searchParams.set('cid', cid + 1);
+        url.search = searchParams.toString();
+        window.location.href = url.toString();
+      }
+    });
+
     // Load /yc-w23-clear.json
     fetch('./yc-w23-clear.json', { cache: "force-cache" })
       .then(response => response.json())
       .then(data => {
         const keys = Object.keys(data.companyURL);
         // Pick random element of keys
-        const randomKey = keys[Math.floor(Math.random() * keys.length)];
-        const randomURL = data.companyURL[randomKey];
+        const companyId = getChosenCompany();
+        const randomKey = companyId == null ? keys[Math.floor(Math.random() * keys.length)] : companyId;
+        const randomURL = data.companyURL[companyId != null ? companyId : randomKey];
         const randomLogo = data.logoURL[randomKey];
         const iframe = document.querySelector('iframe');
         iframe.src = randomURL;
@@ -115,8 +145,9 @@
     </div>
   </header>
   <iframe
+    id="myIframe"
     sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-    frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%">
+    frameborder="0" style="overflow:hidden;width:100%" height="auto">
   </iframe>
 </body>
 </html>
