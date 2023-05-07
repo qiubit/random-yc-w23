@@ -11,11 +11,6 @@
       height: 100%;
       overflow: hidden;
     }
-    iframe {
-      border: none;
-      height: 100%;
-      width: 100%;
-    }
 
     .header { 
       background-color: #fafafa;
@@ -26,7 +21,7 @@
       z-index: 100;
     }
 
-    .container {
+    .headerContainer {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -34,10 +29,16 @@
       margin: 0 auto;
     }
 
+    .bodyContainer {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+
     #companyDescription {
       padding-left: 8px;
     }
-
 
     .logo {
       font-weight: bold;
@@ -72,25 +73,79 @@
     }
   </style>
   <script>
+    const NO_IFRAME_SUPPORT = new Set([
+      0, 2, 6, 13, 15, 23, 24, 28, 37, 41, 52, 67, 78, 80, 83, 96, 111,
+      125, 131, 132, 136, 140, 141, 142, 145, 147, 150, 153, 165, 177,
+      187, 199, 207, 212, 213, 217, 220, 228, 229, 234, 248, 257, 260,
+      261,
+    ]);
+    const MISSING_LOGO = new Set([
+      18, 60, 75, 241
+    ])
+    const FOUR_NIL_FOUR = new Set([195]);
+    const queryParams = new URLSearchParams(window.location.search);
+
+    function getChosenCompany() {
+      const companyId = parseInt(queryParams.get("cid"), 10);
+      return companyId;
+    }
+
+    if (queryParams.get('debug') != null) {
+      document.addEventListener('keypress', function(e) {
+        if (e.code === 'Space') {
+          const cid = parseInt(queryParams.get('cid')) || 0;
+          queryParams.set('cid', cid + 1);
+
+          const url = new URL(window.location.href);
+          url.search = queryParams.toString();
+          window.location.href = url.toString();
+        }
+      });
+    }
+
     // Load /yc-w23-clear.json
     fetch('./yc-w23-clear.json', { cache: "force-cache" })
       .then(response => response.json())
       .then(data => {
         const keys = Object.keys(data.companyURL);
-        // Pick random element of keys
-        const randomKey = keys[Math.floor(Math.random() * keys.length)];
-        const randomURL = data.companyURL[randomKey];
-        const randomLogo = data.logoURL[randomKey];
+        const companyId = getChosenCompany();
+
+        let key = isNaN(companyId) ?
+          keys[Math.floor(Math.random() * keys.length)] : companyId;
+        let keyInt = parseInt(key, 10);
+        while (
+          NO_IFRAME_SUPPORT.has(keyInt) ||
+          FOUR_NIL_FOUR.has(keyInt) ||
+          MISSING_LOGO.has(keyInt))
+        {
+          key = keys[Math.floor(Math.random() * keys.length)]
+          keyInt = parseInt(key, 10);
+        }
+
+        const iframeURL = data.companyURL[key];
+        const companyLogo = data.logoURL[key];
+
         const iframe = document.querySelector('iframe');
-        iframe.src = randomURL;
+        iframe.src = iframeURL;
+
         const logoURL = document.getElementById("logoURL");
-        logoURL.src = randomLogo;
+        logoURL.src = companyLogo;
+
         const companyDescription = document.getElementById("companyDescription");
-        companyDescription.innerText = data.title[randomKey] + " - " + data.description[randomKey];
+        companyDescription.innerText = data.title[key] + " - " + data.description[key];
+
         const companyURL = document.getElementById("companyURL");
-        companyURL.href = randomURL;
+        companyURL.href = iframeURL;
+
         const companyURLText = document.getElementById("companyURLText");
-        companyURLText.innerText = "Go to " + data.title[randomKey];
+        companyURLText.innerText = "Go to " + data.title[key];
+
+        // Makes these elements visible
+        document.getElementById("logoURL").style = '';
+        document.getElementById("companyDescription").style = '';
+        document.getElementById("companyURLIcon").style = '';
+        document.getElementById("companyURLText").style = '';
+
       })
       .catch(error => {
         console.error(error);
@@ -107,25 +162,65 @@
   </script>
 </head>
 <body style="margin:0px;padding:0px;overflow:hidden">
-  <header class="header">
-    <div class="container">
-      <img id="logoURL" src="#" alt="Company Logo" width="48" height="48">
-      <div id="companyDescription">My Website</div>
-      <nav>
-        <ul>
-          <li>
-            <a id="companyURL" href="#">
-              <svg id="companyURLIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" width="1.25em" height="1.25em" class="-mt-px inline-block h-4 w-4 group-hover:underline"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-              <div id="companyURLText">Home</div>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-  <iframe
-    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-    frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%">
-  </iframe>
+  <div class="bodyContainer">
+    <header class="header">
+      <div class="headerContainer">
+        <img
+          style="visibility:hidden"
+          id="logoURL"
+          src="#"
+          width="48"
+          height="48"
+        />
+        <div
+          style="visibility:hidden"
+          id="companyDescription"
+        >
+        </div>
+        <nav>
+          <ul>
+            <li>
+              <a id="companyURL" href="#">
+                <svg
+                  style="visibility:hidden"
+                  id="companyURLIcon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                  width="1.25em"
+                  height="1.25em"
+                  class="-mt-px inline-block h-4 w-4 group-hover:underline"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  >
+                  </path>
+                </svg>
+                <div
+                  style="visibility:hidden"
+                  id="companyURLText"
+                >
+                </div>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <iframe
+      id="myIframe"
+      sandbox="allow-same-origin allow-top-navigation allow-scripts allow-popups allow-forms"
+      frameborder="0"
+      style="display:flex;overflow:hidden;width:100%"
+      height="100%"
+    >
+    </iframe>
+  </div>
 </body>
 </html>
