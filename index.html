@@ -49,6 +49,17 @@
 
     #companyDescription {
       padding-left: 8px;
+      display: -webkit-box; /* Required for Safari */
+      display: -moz-box; /* Required for Firefox */
+      display: box;
+      -webkit-box-orient: vertical;
+      -moz-box-orient: vertical;
+      box-orient: vertical;
+      -webkit-line-clamp: 4; /* Truncates text after 3 lines */
+      -moz-line-clamp: 4;
+      line-clamp: 4;
+      overflow: hidden; /* Hides any overflowing text */
+      text-overflow: ellipsis; /* Adds an ellipsis (...) to indicate truncated text */
     }
 
     .logo {
@@ -148,13 +159,13 @@
         logoURL.src = companyLogo;
 
         const companyDescription = document.getElementById("companyDescription");
-        companyDescription.innerText = data.title[key] + " - " + data.description[key];
+        companyDescription.innerText = data.description[key];
 
         const companyURL = document.getElementById("companyURL");
         companyURL.href = iframeURL;
 
         const companyURLText = document.getElementById("companyURLText");
-        companyURLText.innerText = "Go to " + data.title[key];
+        companyURLText.innerText = data.title[key];
 
         // Makes these elements visible
         document.getElementById("logoURL").style = '';
