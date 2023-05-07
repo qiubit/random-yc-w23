@@ -9,9 +9,10 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-FHSM67JBMW');
+    function initGtag(){
+      gtag('js', new Date());
+      gtag('config', 'G-FHSM67JBMW');
+    }
   </script>
   <style>
     html, body {
@@ -104,7 +105,6 @@
         if (e.code === 'Space') {
           const cid = parseInt(queryParams.get('cid')) || 0;
           queryParams.set('cid', cid + 1);
-
           const url = new URL(window.location.href);
           url.search = queryParams.toString();
           window.location.href = url.toString();
@@ -155,6 +155,8 @@
         document.getElementById("companyURLIcon").style = '';
         document.getElementById("companyURLText").style = '';
 
+        document.title = "Random YC: " + data.title[key];
+        initGtag();
       })
       .catch(error => {
         console.error(error);
