@@ -75,12 +75,18 @@
       display: flex;
     }
 
-    nav ul li div{
+    nav ul li div {
       padding-left: 4px;
     }
 
     nav ul li a:hover {
       text-decoration: underline;
+    }
+
+    .verticalDivider {
+      height: 24px;
+      border-left: 1px solid #ccc;
+      margin: 0 8px;
     }
   </style>
   <script>
@@ -209,6 +215,14 @@
                   id="companyURLText"
                 >
                 </div>
+              </a>
+            </li>
+            <li>
+              <div class="verticalDivider"></div>
+            </li>
+            <li>
+              <a id="nextURL" href="/">
+                Next
               </a>
             </li>
           </ul>
