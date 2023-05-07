@@ -74,6 +74,9 @@
       margin: 0;
       padding: 0;
       display: flex;
+      flex-direction: column;
+      text-align: right;
+      text-justify: auto;
     }
 
     nav ul li {
@@ -87,7 +90,7 @@
     }
 
     nav ul li div {
-      padding-left: 4px;
+      padding-right: 4px;
     }
 
     nav ul li a:hover {
@@ -98,6 +101,27 @@
       height: 24px;
       border-left: 1px solid #ccc;
       margin: 0 8px;
+    }
+
+    .horizontalDivider {
+      width: 50%;
+      border-top: 1px solid #ccc;
+      margin: 16px 0;
+    }
+
+    #nextURL {
+      margin-top: 8px;
+      display: flex;
+      justify-content: flex-end;
+      text-align: center;
+      align-items: center;
+    }
+
+    #companyURL {
+      display: flex;
+      justify-content: flex-end;
+      text-align: center;
+      align-items: center;
     }
   </style>
   <script>
@@ -201,6 +225,11 @@
           <ul>
             <li>
               <a target="_blank" id="companyURL" href="#">
+                <div
+                  style="visibility:hidden"
+                  id="companyURLText"
+                >
+                </div>
                 <svg
                   style="visibility:hidden"
                   id="companyURLIcon"
@@ -221,19 +250,12 @@
                   >
                   </path>
                 </svg>
-                <div
-                  style="visibility:hidden"
-                  id="companyURLText"
-                >
-                </div>
               </a>
             </li>
             <li>
-              <div class="verticalDivider"></div>
-            </li>
-            <li>
               <a id="nextURL" href="/">
-                Next
+                <div>Next</div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="24" viewBox="0 96 960 960" width="24"><path d="m375 816-43-43 198-198-198-198 43-43 241 241-241 241Z"/></svg>
               </a>
             </li>
           </ul>
