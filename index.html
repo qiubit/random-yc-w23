@@ -181,6 +181,9 @@
 
         const logoURL = document.getElementById("logoURL");
         logoURL.src = companyLogo;
+        logoURL.onload = function () {
+          document.getElementById("logoURL").style = '';
+        }
 
         const companyDescription = document.getElementById("companyDescription");
         companyDescription.innerText = data.description[key];
@@ -192,7 +195,6 @@
         companyURLText.innerText = data.title[key];
 
         // Makes these elements visible
-        document.getElementById("logoURL").style = '';
         document.getElementById("companyDescription").style = '';
         document.getElementById("companyURLIcon").style = '';
         document.getElementById("companyURLText").style = '';
